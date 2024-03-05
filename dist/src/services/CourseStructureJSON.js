@@ -25,7 +25,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
  *  GNU Affero General Public License for more details.
  *
  *  You should have received a copy of the GNU Affero General Public License
- *  along with this program. If not, see <https://www.gnu.org/licenses/>.  
+ *  along with this program. If not, see <https://www.gnu.org/licenses/>.
  *
  *  No Patent Rights, Trademark Rights and/or other Intellectual Property
  *  Rights other than the rights under this license are granted.
@@ -33,7 +33,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
  *
  *  For any other rights, a separate agreement needs to be closed.
  *
- *  For more information please contact:  
+ *  For more information please contact:
  *  Fraunhofer FOKUS
  *  Kaiserin-Augusta-Allee 31
  *  10589 Berlin, Germany
@@ -51,6 +51,7 @@ const LODAO_1 = __importDefault(require("../models/LO/LODAO"));
  */
 class CourseStructreJSON {
     static fillRecursiveLO(courseStructure, allRelations, visited, allLOs, allTools, role, lrsIds, globalVisited = false) {
+        var _a;
         if (visited[courseStructure._id])
             return;
         visited[courseStructure._id] = true;
@@ -68,7 +69,8 @@ class CourseStructreJSON {
         const loHasLos = allRelations.filter((item) => (item.fromType === 'lo') && item.fromId === courseStructure._id);
         for (const loHaslo of loHasLos) {
             if (loHaslo.toType === 'lo') {
-                const childLo = allLOs.find((item) => item._id === loHaslo.toId);
+                let childLo = allLOs.find((item) => item._id === loHaslo.toId);
+                childLo.order = loHaslo.order;
                 if (!globalVisited)
                     courseStructure.children = [...courseStructure.children, childLo];
                 this.fillRecursiveLO(childLo, allRelations, visited, allLOs, allTools, role, lrsIds, globalVisited);
@@ -79,6 +81,7 @@ class CourseStructreJSON {
                 courseStructure.tool.lrss = lrsIds;
             }
         }
+        courseStructure.children = (_a = courseStructure.children) === null || _a === void 0 ? void 0 : _a.sort((a, b) => a.order - b.order);
         return courseStructure;
     }
     static recursiveToolSearch(courseStructure, toolId) {
@@ -119,7 +122,9 @@ class CourseStructreJSON {
                 const serviceIds = allRelations.filter((relation) => relation.toType === 'service' && relation.fromId === groupId).map((relation) => relation.toId);
                 const lrsIds = services.filter((service) => service.type === 'LRS' && serviceIds.includes(service._id)).map((lrs) => lrs._id);
                 for (const groupHasLo of groupsHaveLOs) {
-                    const lo = los.find((lo) => lo._id === groupHasLo.toId);
+                    let lo = los.find((lo) => lo._id === groupHasLo.toId);
+                    // @ts-ignore
+                    lo.order = groupHasLo.order;
                     const recursiveLO = this.fillRecursiveLO(lo, allRelations, localVisited, los, tools, role.displayName, lrsIds, globalVisited[lo._id]);
                     if (!globalVisited[lo._id]) {
                         if (recursiveLO) {
@@ -134,7 +139,7 @@ class CourseStructreJSON {
                 }
                 globalVisited = Object.assign(Object.assign({}, globalVisited), localVisited);
             }
-            return parentNodes;
+            return parentNodes.sort((a, b) => a.order - b.order);
         });
     }
     /**

@@ -43,6 +43,7 @@ export interface CourseStructure extends BaseDatamodel {
      * The tool-datamodel + the roles/lrss of this specific course-structure
      */
     tool?: ExtendedTool;
+    order?: number;
 }
 /**
  * Static class to retrieve the course structure of a specific user
