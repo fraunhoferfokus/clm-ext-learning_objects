@@ -63,7 +63,7 @@ Promise.all([
     pathBDTOInstance.registerRoutes(app, ECLUDED_PATHS),
 ]).then(() => {
     app.listen(PORT, () => {
-        console.log("LO MICROSERVICE: UP")
+        console.log("Learning Objects Service listening on port " + PORT)
     })
 })
 
