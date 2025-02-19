@@ -27,16 +27,16 @@
  *  famecontact@fokus.fraunhofer.de
  * -----------------------------------------------------------------------------
  */
-import CourseStructureJSON, { CourseStructure, ExtendedTool } from '../services/CourseStructureJSON'
 import { LOBDTO, loBDTOInstance } from '../models/LO/LOBDTO'
 import LOModel, { iLOModel } from '../models/LO/LOModel'
+import CourseStructureJSON, { CourseStructure } from '../services/CourseStructureJSON'
 
 export {
+    CourseStructure,
     CourseStructureJSON,
     iLOModel,
-    LOModel,
     LOBDTO,
-    ExtendedTool,
-    CourseStructure,
-    loBDTOInstance
+    loBDTOInstance,
+    LOModel
 }
+

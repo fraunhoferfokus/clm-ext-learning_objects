@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.loBDTOInstance = exports.getIMSCCForUser = exports.LOModel = exports.LOBDTO = exports.CourseStructureJSON = void 0;
+exports.LOModel = exports.loBDTOInstance = exports.LOBDTO = exports.CourseStructureJSON = void 0;
 /* -----------------------------------------------------------------------------
  *  Copyright (c) 2023, Fraunhofer-Gesellschaft zur Förderung der angewandten Forschung e.V.
  *
@@ -33,8 +33,6 @@ exports.loBDTOInstance = exports.getIMSCCForUser = exports.LOModel = exports.LOB
  *  famecontact@fokus.fraunhofer.de
  * -----------------------------------------------------------------------------
  */
-const UserLOExtensionCtrl_1 = require("../controllers/UserLOExtensionCtrl");
-Object.defineProperty(exports, "getIMSCCForUser", { enumerable: true, get: function () { return UserLOExtensionCtrl_1.getIMSCCForUser; } });
 const LOBDTO_1 = require("../models/LO/LOBDTO");
 Object.defineProperty(exports, "LOBDTO", { enumerable: true, get: function () { return LOBDTO_1.LOBDTO; } });
 Object.defineProperty(exports, "loBDTOInstance", { enumerable: true, get: function () { return LOBDTO_1.loBDTOInstance; } });

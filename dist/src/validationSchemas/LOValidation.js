@@ -1,6 +1,4 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateLOValidation = exports.createLOValidaiton = void 0;
 /* -----------------------------------------------------------------------------
  *  Copyright (c) 2023, Fraunhofer-Gesellschaft zur Förderung der angewandten Forschung e.V.
  *
@@ -30,6 +28,8 @@ exports.updateLOValidation = exports.createLOValidaiton = void 0;
  *  famecontact@fokus.fraunhofer.de
  * -----------------------------------------------------------------------------
  */
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.updateLOValidation = exports.createLOValidaiton = void 0;
 const express_validator_1 = require("express-validator");
 const sharedSchema = {
     displayName: {
