@@ -1,26 +1,13 @@
 **This microservice is based upon  [clm-core](https://github.com/fraunhoferfokus/clm-core) and extends the basic functionalities with additional features**
 
-
-# What is the Common Learning Middleware?
-
-Connecting disparate learning environments into educational ecosystems using open standards is a core use case of the Common Learning Middleware (CLM). Based on the best-of-breed approach, various providers of educational offerings can connect their learning content as learning nuggets via the CLM using a publish-subscribe system in order to increase their own reach. The CLM supports common standards of a seamless educational journey - to facilitate integration - and is also able to translate from one standard of a client system to the other or the same standard of the target system at the runtime of a request. 
-
-CLM serves as a mediator between learning platforms and learning content, while the integration of further standards enables consumers to offer extended services, such as AI-supported systems, recommender systems or learning analytics systems via the CLM.
-
-The two videos below explain CLM from the perspective of a user and provider.
-
-#### User
-https://github.com/fraunhoferfokus/clm-core/assets/135810890/44a340ab-1d86-4930-9c08-bffe457bc222
-
-#### Provider
-https://github.com/fraunhoferfokus/clm-core/assets/135810890/87cd557e-3214-4b13-b49d-703f9eccca7d
-
-
-# CLM-EXT-LEARNING_OBJECTS
+## CLM-EXT-LEARNING_OBJECTS
 This service facilitates the management of learning objects. Learning objects are essentially courses, which can be nested within each other as needed. A learning object becomes a 'launchable object' when it is linked to a tool capable of being launched. Enrollments to these learning or launchable objects can be made via existing users and groups. Once enrolled, a user is authorized to access and utilize the associated tool.
 ## Requirements
-- MariaDB, set up locally.
-- Node.js 20.x
+- MariaDB, set up locally. This service leverages a database (DB) as the cornerstone for storing documents persistently. To establish a connection with MariaDB, it is essential that the database is secured through username and password authentication. Therefore, in order to run this service it is  required to create a database within the MariaDB and configure it with a username and password for access control
+  * MariaDB Installation: https://mariadb.com/kb/en/getting-installing-and-upgrading-mariadb/
+  * For setting up the password of a user: https://mariadb.com/kb/en/set-password/
+  
+- Node.js 20.x: https://nodejs.org/en/download
 ### Folder Structure
 root
 
@@ -62,9 +49,9 @@ This service defines its own resources as well as serving resources that origina
 This service functions as a web microservice that can be orchestrated through a gateway and as an npm package to provide functionalities to other CLM extensions. A microservice can build upon the classes/types/interfaces of this service to extend basic functionalities.
 
 ## Setup for testing the webserver 
-
-1. npm install
-2. Copy .env.default to .env and overwrite needed properties
+1. The service's configuration can be customized by referring to the `.env` file. Within this file, the `MARIA_CONFIG` variable should be updated with the appropriate values to reflect the user's specific database settings. Refer to the `MARIA_CONFIG` variable in the table below to see which comma seperated value refers to which respective database setting. 
+2. npm install
+3. Copy .env.default to .env and overwrite needed properties
 
 Following table gives an overview of the settings you can change through the environment variables
 
@@ -81,6 +68,13 @@ Following table gives an overview of the settings you can change through the env
 
 3.1 `npm run dev` for development with nodemon
 3.2 `npm start` for deployment
+
+4.  Subsequently, the JSON representation of the Open-API specification should be accessible at:
+
+`http://localhost:${PORT}/learningObjects/swagger`
+
+**To access the API endpoints detailed in the Open-API specification, an API token is required. This token is generated during the initialization of the clm-core module. For further details, please consult the documentation at [clm-core](https://github.com/fraunhoferfokus/clm-core).**
+
 
 ## For Consumption as an NPM Package
 
@@ -129,4 +123,4 @@ We will be happy to answer your questions at {clm@fokus.fraunhofer.de}
 
 ## License
 
-The project is made available under the license in the file [LICENSE.txt](LICENSE.txt)
+The project is made available under the license in the file [license.txt](LICENSE.txt)

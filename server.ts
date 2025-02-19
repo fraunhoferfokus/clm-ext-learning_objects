@@ -93,7 +93,7 @@ Promise.all([
     ),
 ]).then(() => {
     app.listen(PORT, () => {
-        console.log("LO MICROSERVICE: UP")
+        console.log("Learning Objects Service listening on port " + PORT)
     })
 })
 
