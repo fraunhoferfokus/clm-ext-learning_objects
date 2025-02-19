@@ -53,14 +53,44 @@ app.use(function (req, res, next) {
     next();
 });
 app.use(cors())
+
 app.use(express.json())
-app.get('/health', (req, res) => {res.send('OK')})
+app.get('/health', (req, res) => { res.send('OK') })
 app.use(basePath, EntryPointCtrl)
 app.use('/launchableObjects', EntryPointCtrl)
 app.use(errHandler);
 
 Promise.all([
-    pathBDTOInstance.registerRoutes(app, ECLUDED_PATHS),
+    pathBDTOInstance.registerRoutes(
+        app,
+        ECLUDED_PATHS,
+        undefined,
+        undefined,
+        [
+            "/learningObjects/:id/metadata",
+            "/learningObjects/users/me/courses",
+            "/learningObjects/users/:id/courses",
+            "/learningObjects/mgmt",
+            "/learningObjects/mgmt/:id",
+            "/learningObjects/mgmt/relations",
+            "/learningObjects/mgmt/:id/learningObjects/:childLoId",
+            "/learningObjects/mgmt/:id/tools/:toolId",
+            "/learningObjects/mgmt/:id/relations/:relationId",
+            "/learningObjects/mgmt/groups/:id/enrollments/:loId",
+            "/learningObjects/mgmt/groups/:id/enrollments/:relationId",
+            "/launchableObjects/:id/metadata",
+            "/launchableObjects/users/me/courses",
+            "/launchableObjects/users/:id/courses",
+            "/launchableObjects/mgmt",
+            "/launchableObjects/mgmt/:id",
+            "/launchableObjects/mgmt/relations",
+            "/launchableObjects/mgmt/:id/tools/:toolId",
+            "/launchableObjects/mgmt/:id/learningObjects/:childLoId",
+            "/launchableObjects/mgmt/:id/relations/:relationId",
+            "/launchableObjects/mgmt/groups/:id/enrollments/:loId",
+            "/launchableObjects/mgmt/groups/:id/enrollments/:relationId"
+        ]
+    ),
 ]).then(() => {
     app.listen(PORT, () => {
         console.log("LO MICROSERVICE: UP")

@@ -44,11 +44,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const clm_core_1 = require("clm-core");
 const LOValidation_1 = require("../validationSchemas/LOValidation");
 // import { toolBackendDTO } from "clm-ext-tools"
-const clm_ext_tools_1 = require("clm-ext-tools");
+// import { toolBDTOInstance } from "clm-ext-tools"
 const LODAO_1 = __importDefault(require("../models/LO/LODAO"));
 const LOModel_1 = __importDefault(require("../models/LO/LOModel"));
 const LOFDTO_1 = __importDefault(require("../models/LO/LOFDTO"));
 const LORelationDTO_1 = __importDefault(require("../models/LO/LORelationDTO"));
+const toolBDTO_1 = require("../lib/toolBDTO");
 class MgtmLOController extends clm_core_1.BaseModelController {
     addLOToLO() {
         return (req, res, next) => __awaiter(this, void 0, void 0, function* () {
@@ -110,10 +111,6 @@ class MgtmLOController extends clm_core_1.BaseModelController {
                 let relations = (yield clm_core_1.relationBDTOInstance.findAll()).filter((item) => item.fromType === 'lo');
                 let userPermissions = (_a = req.requestingUser) === null || _a === void 0 ? void 0 : _a.permissions;
                 if (!((_b = req.requestingUser) === null || _b === void 0 ? void 0 : _b.isSuperAdmin) && userPermissions) {
-                    console.log({
-                        relations,
-                        userPermissions
-                    });
                     relations = relations
                         .filter((relation) => userPermissions === null || userPermissions === void 0 ? void 0 : userPermissions[relation._id]);
                 }
@@ -128,7 +125,7 @@ class MgtmLOController extends clm_core_1.BaseModelController {
     addToolToLO() {
         return (req, res, next) => __awaiter(this, void 0, void 0, function* () {
             try {
-                const [lo, tool] = yield Promise.all([LODAO_1.default.findById(req.params.id), clm_ext_tools_1.toolBDTOInstance.findById(req.params.toolId)]);
+                const [lo, tool] = yield Promise.all([LODAO_1.default.findById(req.params.id), toolBDTO_1.toolBDTOInstance.findById(req.params.toolId)]);
                 yield clm_core_1.relationBDTOInstance.createRelationship(new clm_core_1.RelationModel({ fromId: lo._id, fromType: 'lo', toId: tool._id, toType: 'tool' }));
                 return res.json({ message: "Successfully added tool to lo!" });
             }
@@ -375,7 +372,7 @@ controller.router.post('/:id/tools/:toolId', clm_core_1.AuthGuard.permissionChec
 /**
  * @openapi
  * /learningObjects/mgmt/{id}/relations/{relationId}:
- *   put:
+ *   patch:
  *     tags:
  *          - mgmt-los
  *     summary: "Change the order of a learning object within a learning object, or change the associated tool to a specific learning object [Minimum Role: 'Instructor']"

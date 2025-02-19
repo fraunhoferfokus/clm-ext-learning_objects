@@ -57,7 +57,30 @@ app.use(basePath, EntryPointCtrl_1.default);
 app.use('/launchableObjects', EntryPointCtrl_1.default);
 app.use(clm_core_1.errHandler);
 Promise.all([
-    clm_core_1.pathBDTOInstance.registerRoutes(app, ECLUDED_PATHS),
+    clm_core_1.pathBDTOInstance.registerRoutes(app, ECLUDED_PATHS, undefined, undefined, [
+        "/learningObjects/:id/metadata",
+        "/learningObjects/users/me/courses",
+        "/learningObjects/users/:id/courses",
+        "/learningObjects/mgmt",
+        "/learningObjects/mgmt/:id",
+        "/learningObjects/mgmt/relations",
+        "/learningObjects/mgmt/:id/learningObjects/:childLoId",
+        "/learningObjects/mgmt/:id/tools/:toolId",
+        "/learningObjects/mgmt/:id/relations/:relationId",
+        "/learningObjects/mgmt/groups/:id/enrollments/:loId",
+        "/learningObjects/mgmt/groups/:id/enrollments/:relationId",
+        "/launchableObjects/:id/metadata",
+        "/launchableObjects/users/me/courses",
+        "/launchableObjects/users/:id/courses",
+        "/launchableObjects/mgmt",
+        "/launchableObjects/mgmt/:id",
+        "/launchableObjects/mgmt/relations",
+        "/launchableObjects/mgmt/:id/tools/:toolId",
+        "/launchableObjects/mgmt/:id/learningObjects/:childLoId",
+        "/launchableObjects/mgmt/:id/relations/:relationId",
+        "/launchableObjects/mgmt/groups/:id/enrollments/:loId",
+        "/launchableObjects/mgmt/groups/:id/enrollments/:relationId"
+    ]),
 ]).then(() => {
     app.listen(PORT, () => {
         console.log("LO MICROSERVICE: UP");

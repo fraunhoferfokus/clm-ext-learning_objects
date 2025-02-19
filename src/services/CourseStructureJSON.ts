@@ -27,25 +27,27 @@
  *  famecontact@fokus.fraunhofer.de
  * -----------------------------------------------------------------------------
  */
+
 import { BaseDatamodel, relationBDTOInstance, RelationModel, roleBDTOInstance } from "clm-core";
-import { toolBDTOInstance, ToolModel } from "clm-ext-tools";
+// import { toolBDTOInstance, ToolModel } from "clm-ext-tools";
 import { spBDTOInstance } from "clm-ext-service_providers";
 import LODAO from "../models/LO/LODAO";
+import { toolBDTOInstance } from "../lib/toolBDTO";
 
 /**
  * @public
  * Extends the tool datamodel
  */
-export type ExtendedTool = ToolModel & {
-    roles?: string[],
-    lrss?: string[],
-    rootUsername?: string,
-    rootPassword?: string
-    /**
-   * The id of the learning object where the tool is located
-   */
-    loId?: string
-}
+// export type ExtendedTool = ToolModel & {
+//     roles?: string[],
+//     lrss?: string[],
+//     rootUsername?: string,
+//     rootPassword?: string
+//     /**
+//    * The id of the learning object where the tool is located
+//    */
+//     loId?: string
+// }
 
 /**
  * Course-structure of a specific user which extends {@link https://gitlab.fokus.fraunhofer.de/learning-technologies/clm-framework/clm-ext-tool/-/blob/dev/docs/clm-ext-tools.itoolmodel.md|ToolModel}
@@ -75,7 +77,7 @@ export interface CourseStructure extends BaseDatamodel {
     /**
      * The tool-datamodel + the roles/lrss of this specific course-structure
      */
-    tool?: ExtendedTool,
+    tool?: any,
     /*
     * The order of the learning object
     */
@@ -95,7 +97,7 @@ export default class CourseStructreJSON {
         allRelations: RelationModel[],
         visited: any,
         allLOs: any[],
-        allTools: ToolModel[],
+        allTools: any[],
         role: string,
         lrsIds: string[],
         globalVisited = false
@@ -197,7 +199,7 @@ export default class CourseStructreJSON {
      * @param toolId - The id of the tool
      * @returns 
      */
-    static async getUserTool(userId: string, toolId: string): Promise<ExtendedTool | undefined> {
+    static async getUserTool(userId: string, toolId: string): Promise<any | undefined> {
         const [services, relations] = await Promise.all([spBDTOInstance.findAll(), relationBDTOInstance.findAll()])
         const serviceOfToolRelation = relations.find((relation) => relation.toId === toolId && relation.fromType === 'service')
         let service = services.find((service) => service._id === serviceOfToolRelation?.fromId)

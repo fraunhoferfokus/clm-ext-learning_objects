@@ -6,6 +6,7 @@ import { BaseDatamodel, iBaseDatamodel } from "clm-core";
 export interface iLOModel extends iBaseDatamodel {
     iconUrl?: string;
     displayName: string;
+    helloworld?: string;
 }
 /**
  * Learning object datamodel

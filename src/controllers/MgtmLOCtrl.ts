@@ -31,11 +31,12 @@ import { BaseModelController, AuthGuard, relationBDTOInstance, RelationModel } f
 import { createLOValidaiton, updateLOValidation } from '../validationSchemas/LOValidation';
 import express from 'express'
 // import { toolBackendDTO } from "clm-ext-tools"
-import { toolBDTOInstance } from "clm-ext-tools"
+// import { toolBDTOInstance } from "clm-ext-tools"
 import LODAO from '../models/LO/LODAO';
 import LOModel from '../models/LO/LOModel';
 import LOFDTO from '../models/LO/LOFDTO';
 import LORelationDTO from '../models/LO/LORelationDTO';
+import { toolBDTOInstance } from "../lib/toolBDTO";
 
 class MgtmLOController extends BaseModelController<typeof LODAO, LOModel, LOFDTO>{
 
@@ -101,12 +102,6 @@ class MgtmLOController extends BaseModelController<typeof LODAO, LOModel, LOFDTO
                 let relations = (await relationBDTOInstance.findAll()).filter((item) => item.fromType === 'lo')
                 let userPermissions = req.requestingUser?.permissions
                 if (!req.requestingUser?.isSuperAdmin && userPermissions) {
-                    console.log({
-                        relations,
-                        userPermissions
-                    })
-
-
                     relations = relations
                         .filter((relation) => userPermissions?.[relation._id])
                 }
@@ -134,7 +129,6 @@ class MgtmLOController extends BaseModelController<typeof LODAO, LOModel, LOFDTO
             //     .catch((err) => next(err))
         }
     }
-
 }
 
 const controller = new MgtmLOController(LODAO, LOModel, LOFDTO)
@@ -376,7 +370,7 @@ controller.router.post('/:id/tools/:toolId', AuthGuard.permissionChecker('lo'), 
 /**
  * @openapi
  * /learningObjects/mgmt/{id}/relations/{relationId}:
- *   put:
+ *   patch:
  *     tags:
  *          - mgmt-los
  *     summary: "Change the order of a learning object within a learning object, or change the associated tool to a specific learning object [Minimum Role: 'Instructor']"

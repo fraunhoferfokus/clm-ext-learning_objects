@@ -1,4 +1,5 @@
-import CourseStructureJSON, { CourseStructure, ExtendedTool } from '../services/CourseStructureJSON';
+import { getIMSCCForUser } from '../controllers/UserLOExtensionCtrl';
 import { LOBDTO, loBDTOInstance } from '../models/LO/LOBDTO';
 import LOModel, { iLOModel } from '../models/LO/LOModel';
-export { CourseStructureJSON, iLOModel, LOModel, LOBDTO, ExtendedTool, CourseStructure, loBDTOInstance };
+import CourseStructureJSON, { CourseStructure } from '../services/CourseStructureJSON';
+export { CourseStructure, CourseStructureJSON, LOBDTO, LOModel, getIMSCCForUser, iLOModel, loBDTOInstance };

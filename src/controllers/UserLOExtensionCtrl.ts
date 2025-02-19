@@ -29,7 +29,7 @@
  */
 
 import express from 'express'
-import { AuthGuard, BaseExtensionCtrl, RelationBDTO, relationBDTOInstance } from "clm-core"
+import { AuthGuard, BaseExtensionCtrl, RelationBDTO, jwtServiceInstance, relationBDTOInstance, userBDTOInstance } from "clm-core"
 import { convertJsonToCC } from '../services/IMSCCtransformer'
 import CourseStructureJSON from '../services/CourseStructureJSON'
 import xml2js, { Builder } from 'xml2js'
@@ -47,139 +47,49 @@ class MgtmLOGroupExtensionCtrl extends BaseExtensionCtrl {
 
     getOwnCourseStructure(): express.Handler {
         return async (req, res, next) => {
-            let accessToken: string = req.header('x-access-token')!;
-            let includeMetadata = req.query.includeMetadata
-
-            let opt = {
-                setIds: true,
-                accessToken,
-                includeMetadata
-                // tps: result.data,
-            };
-
-            const [parentNodes] = await Promise.all([
-                CourseStructureJSON.getUserCourseStrucuture(req.requestingUser?._id!),
-            ]
-            );
-
-            const json = await new Promise((resolve, reject) => {
-                convertJsonToCC(parentNodes, opt, async (xml: any) => {
-                    xml2js.parseString(xml, (err, result) => {
-
-                        if (err) return res.json(err)
-                        resolve(result)
-                    })
-
-                })
-
-            })
-
+            const userId = req.requestingUser!._id
+            let json = await getIMSCCForUser(userId)
             let builder = new xml2js.Builder();
-
-            if (req.query.includeMetadata === 'true') {
-                // await manipulate(json);
-            }
-
-            // return res.json(json)
-
             let xml = builder.buildObject(json)
             return res
                 .type('application/xml')
                 .status(200)
                 .send(xml);
-
-
-
-
-
-
-
-            // return res.json(result)
-
-
-            // return res
-            //     .type('application/xml')
-            //     .send(xml)
-
-
-
-
-
         }
     }
-
-
-
 }
 
+export async function getIMSCCForUser(userId: string) {
+    let user = await userBDTOInstance.findById(userId)
+    let [accessToken, _] = await jwtServiceInstance.createAccessAndRefreshToken(user)
+    
+    let opt = {
+        setIds: true,
+        accessToken,
+    };
 
-// async function manipulate(struc: any) {
-//     const organization = struc.manifest.organizations[0].organization[0]
-//     const items = organization.item[0].item
+    const [parentNodes] = await Promise.all([
+        CourseStructureJSON.getUserCourseStrucuture(userId),
+    ]
+    );
 
-//     for (let item of items) {
-
-//         if (item.$) {
-//             const cp: any = await createCP(item.$.identifierRef);
-
-//             if (JSON.stringify(cp[0]['metadata'][0].lom) !== '{}') {
-//                 struc.manifest.metadata.push({ metadata: [cp[0]['metadata'][0].lom] })
-
-//             }
-//         } else if (item.item) {
-//             recursive(struc, item.item)
-//         }
-
-
-//     }
-//     struc.manifest.metadata = struc.manifest.metadata
-//     return struc
-
-// }
-
-async function recursive(struc: any, tree: any) {
-    for (let item of tree) {
-        if (item.item) recursive(struc, item.item)
-        const resources = struc.manifest.resources[0].resource
-        // add resouce to resources
-
-        if (item.$) {
-            resources.push({
-                $: {
-                    type: "imswl_xmlv1p3",
-                },
-                weblink: [
-                    {
-                        $: {
-                            xmlns: "http://www.imsglobal.org/xsd/imsccv1p3/imswl_v1p3",
-                            'xlmns:xsi': "http://www.w3.org/2001/XMLSchema-instance",
-                            'xsi:schemaLocation': "http://www.imsglobal.org/xsd/imsccv1p3/imswl_v1p3 http://www.imsglobal.org/profile/cc/ccv1p3/ccv1p3_imswl_v1p3.xsd"
-                        },
-                        url: [
-                            {
-                                $: {
-                                    href: `${process.env.DEPLOY_URL}/learningObjects/${item.$.identifierRef}`
-                                }
-                            }
-                        ]
-                    },
-                ]
-
+    const json = await new Promise((resolve, reject) => {
+        convertJsonToCC(parentNodes, opt, async (xml: any) => {
+            xml2js.parseString(xml, (err, result) => {
+                if (err) reject(err)
+                resolve(result)
             })
-        }
-
-
-    }
+        })
+    })
+    return json
 }
-
-
 
 
 
 
 
 const controller = new MgtmLOGroupExtensionCtrl()
-controller.router.use(AuthGuard.requireUserAuthentication({ sameUserAsId: true }))
+controller.router.use(AuthGuard.requireUserAuthentication())
 
 /**
  * @openapi
@@ -235,12 +145,6 @@ controller.router.use(AuthGuard.requireUserAuthentication({ sameUserAsId: true }
  *         - pblc
  *       parameters:
  *         - $ref: '#/components/parameters/accessToken'
- *         - in: query
- *           name: includeMetadata
- *           description: If true, the metadata of the tool will be included in the XML (defaults to false)
- *           example: false 
- *           schema:
- *              type: boolean
  *       responses:
  *         200:
  *           description: Successful operation, The course-structure of that TP is shown in XML. 'Example Value' has problems rendering xml data, please get data from the route for a real example

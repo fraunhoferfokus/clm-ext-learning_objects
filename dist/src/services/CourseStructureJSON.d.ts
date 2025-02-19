@@ -1,19 +1,8 @@
 import { BaseDatamodel, RelationModel } from "clm-core";
-import { ToolModel } from "clm-ext-tools";
 /**
  * @public
  * Extends the tool datamodel
  */
-export type ExtendedTool = ToolModel & {
-    roles?: string[];
-    lrss?: string[];
-    rootUsername?: string;
-    rootPassword?: string;
-    /**
-   * The id of the learning object where the tool is located
-   */
-    loId?: string;
-};
 /**
  * Course-structure of a specific user which extends {@link https://gitlab.fokus.fraunhofer.de/learning-technologies/clm-framework/clm-ext-tool/-/blob/dev/docs/clm-ext-tools.itoolmodel.md|ToolModel}
  * @public
@@ -42,7 +31,8 @@ export interface CourseStructure extends BaseDatamodel {
     /**
      * The tool-datamodel + the roles/lrss of this specific course-structure
      */
-    tool?: ExtendedTool;
+    tool?: any;
+    order?: number;
 }
 /**
  * Static class to retrieve the course structure of a specific user
@@ -65,5 +55,5 @@ export default class CourseStructreJSON {
      * @param toolId - The id of the tool
      * @returns
      */
-    static getUserTool(userId: string, toolId: string): Promise<ExtendedTool | undefined>;
+    static getUserTool(userId: string, toolId: string): Promise<any | undefined>;
 }

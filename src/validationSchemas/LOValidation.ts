@@ -27,6 +27,7 @@
  *  famecontact@fokus.fraunhofer.de
  * -----------------------------------------------------------------------------
  */
+
 import { checkSchema, Schema } from 'express-validator'
 
 
@@ -54,4 +55,4 @@ const createLOSchema: Schema = {
 }
 
 export const createLOValidaiton = checkSchema(createLOSchema)
-export const updateLOValidation = checkSchema(sharedSchema)
+export const updateLOValidation = checkSchema(createLOSchema)

@@ -1,99 +1,31 @@
----
 openapi: 3.0.0
 info:
   title: CLM-EXT-Learning-objects API
   version: 1.0.0
   description: API endpoints the clm-ext-learning_objects module offers
 servers:
-- url: "{scheme}://{hostname}:{port}{path}"
-  description: The production API server
-  variables:
-    hostname:
-      default: localhost
-    port:
-      default: '5002'
-    path:
-      default: ''
-    scheme:
-      default: http
+  - url: '{scheme}://{hostname}:{port}{path}'
+    description: The production API server
+    variables:
+      hostname:
+        default: localhost
+      port:
+        default: '80'
+      path:
+        default: ''
+      scheme:
+        default: http
 security:
-- bearerAuth: []
+  - bearerAuth: []
 paths:
-  "/learningObjects/{loId}/metadata":
-    get:
-      summary: Returns Course-Structure of a logged in user
-      description: Get's the course structure of a tool-provider in XML-Common-Cartridge.
-        Currently Swagger has problems displaying XML-Examples. Get the real example
-        from the endpoint please.
-      tags:
-      - pblc
-      parameters:
-      - in: path
-        name: loId
-        description: Id of the learning object
-        example: loId
-        required: true
-        schema: 
-          type: string
-      responses:
-        '200':
-          description: Successful operation, The course-structure of that TP is shown
-            in XML. 'Example Value' has problems rendering xml data, please get data
-            from the route for a real example
-          content:
-            application/json:
-              schema:
-                properties:
-                  V2/courseStructure:
-                    type: array
-                    items:
-                      "$ref": "#/components/schemas/CourseStructure"
-  "/learningObjects/users/{userId}/courses":
-    get:
-      summary: Returns Course-Structure of a logged in user
-      description: Get's the course structure of a tool-provider in XML-Common-Cartridge.
-        Currently Swagger has problems displaying XML-Examples. Get the real example
-        from the endpoint please.
-      tags:
-      - pblc
-      parameters:
-      - "$ref": "#/components/parameters/accessToken"
-      - in: path
-        name: userId
-        description: Id of the user
-        example: userId
-        required: true
-        schema:
-          type: string
-      - in: query
-        name: includeMetadata
-        description: If true, the metadata of the tool will be included in the XML
-          (defaults to false)
-        example: false
-        schema:
-          type: boolean
-      responses:
-        '200':
-          description: Successful operation, The course-structure of that TP is shown
-            in XML. 'Example Value' has problems rendering xml data, please get data
-            from the route for a real example
-          content:
-            application/json:
-              schema:
-                properties:
-                  V2/courseStructure:
-                    type: array
-                    items:
-                      "$ref": "#/components/schemas/CourseStructure"
-  "/learningObjects/mgmt":
+  /learningObjects/mgmt/los:
     get:
       tags:
-      - mgmt-los
+        - mgmt-los
       summary: 'Retrieves all learning objects [Minimum Role: "Learner"]'
-      description: Retrieve all learning objects the user has access to through the
-        group enrollments.
+      description: Retrieve all learning objects the user has access to through the group enrollments.
       parameters:
-      - "$ref": "#/components/parameters/accessToken"
+        - $ref: '#/components/parameters/accessToken'
       responses:
         '200':
           description: Successfully created learning object
@@ -102,39 +34,39 @@ paths:
               schema:
                 type: array
                 items:
-                  "$ref": "#/components/schemas/LearningObject"
+                  $ref: '#/components/schemas/LearningObject'
         '400':
           description: Bad request - Invalid input or validation error
         '401':
           description: Unauthorized
     post:
       tags:
-      - mgmt-los
+        - mgmt-los
       summary: 'Create a Learning object [Minimum Role: "Instructor"]'
       description: Create a Learning object
       parameters:
-      - "$ref": "#/components/parameters/accessToken"
+        - $ref: '#/components/parameters/accessToken'
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/LearningObject"
+              $ref: '#/components/schemas/LearningObject'
       responses:
         '200':
           description: Successfully created learning object
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/LearningObject"
+                $ref: '#/components/schemas/LearningObject'
         '400':
           description: Bad request - Invalid input or validation error
         '401':
           description: Unauthorized
-  "/learningObjects/mgmt/{id}":
+  /learningObjects/mgmt/los/{id}:
     put:
       tags:
-      - mgmt-los
+        - mgmt-los
       summary: 'Update an existing Learning Object [Minimum Role: "Instructor"]'
       description: Modify an existing Learning object's attributes
       requestBody:
@@ -142,29 +74,29 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/LearningObject"
+              $ref: '#/components/schemas/LearningObject'
       parameters:
-      - "$ref": "#/components/parameters/accessToken"
-      - in: path
-        name: id
-        description: The id of the learning object
-        required: true
-        schema:
-          type: string
+        - $ref: '#/components/parameters/accessToken'
+        - in: path
+          name: id
+          description: The id of the learning object
+          required: true
+          schema:
+            type: string
       responses:
         '200':
           description: Successfully updated learning object
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/LearningObject"
+                $ref: '#/components/schemas/LearningObject'
         '400':
           description: Bad request - Invalid input or validation error
         '401':
           description: Unauthorized
     patch:
       tags:
-      - mgmt-los
+        - mgmt-los
       summary: 'Update an existing Learning Object [Minimum Role: "Instructor"]'
       description: Modify an existing Learning object's attribute
       requestBody:
@@ -172,37 +104,37 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/LearningObject"
+              $ref: '#/components/schemas/LearningObject'
       parameters:
-      - in: path
-        name: id
-        description: The id of the learning object
-        required: true
-        schema:
-          type: string
+        - in: path
+          name: id
+          description: The id of the learning object
+          required: true
+          schema:
+            type: string
       responses:
         '200':
           description: Successfully partially updated learning object
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/LearningObject"
+                $ref: '#/components/schemas/LearningObject'
         '400':
           description: Bad request - Invalid input or validation error
         '401':
           description: Unauthorized
     delete:
       tags:
-      - mgmt-los
+        - mgmt-los
       summary: 'Deletes an existing Learning Object [Minimum Role: "Instructor"]'
       description: Delete an existing learning object
       parameters:
-      - in: path
-        name: id
-        description: The id of the learning object
-        required: true
-        schema:
-          type: string
+        - in: path
+          name: id
+          description: The id of the learning object
+          required: true
+          schema:
+            type: string
       responses:
         '204':
           description: Successfully deleted learning object
@@ -210,183 +142,173 @@ paths:
           description: Bad request
         '401':
           description: Unauthorized
-  "/learningObjects/mgmt/relations":
+  /learningObjects/mgmt/los/relations:
     get:
       tags:
-      - mgmt-los
-      summary: 'Get the relations from the learning objects the user has access to
-        [Minimum Role : ''Learner'']'
-      description: Retrieve relations between various learning objects that the authenticated
-        user has permissions to view.
+        - mgmt-los
+      summary: 'Get the relations from the learning objects the user has access to [Minimum Role : ''Learner'']'
+      description: Retrieve relations between various learning objects that the authenticated user has permissions to view.
       parameters:
-      - "$ref": "#/components/parameters/accessToken"
+        - $ref: '#/components/parameters/accessToken'
       responses:
         '200':
           description: A list of relations between learning objects.
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/relation"
-  "/learningObjects/mgmt/{id}/learningObjects/{childLoId}":
+                $ref: '#/components/schemas/relation'
+  /learningObjects/mgmt/los/{id}/los/{childLoId}:
     post:
       tags:
-      - mgmt-los
+        - mgmt-los
       summary: 'Add learning object to learning object [Minimum Role: ''Instructor'']'
-      description: Associates a specific child learning object with another parent
-        learning object, given their respective identifiers.
+      description: Associates a specific child learning object with another parent learning object, given their respective identifiers.
       parameters:
-      - "$ref": "#/components/parameters/accessToken"
-      - name: id
-        in: path
-        required: true
-        schema:
-          type: string
-      - name: childLoId
-        in: path
-        required: true
-        schema:
-          type: string
+        - $ref: '#/components/parameters/accessToken'
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: childLoId
+          in: path
+          required: true
+          schema:
+            type: string
       responses:
         '200':
-          description: Successfully associated the child learning object with the
-            parent.
-  "/learningObjects/mgmt/{id}/tools/{toolId}":
+          description: Successfully associated the child learning object with the parent.
+  /learningObjects/mgmt/los/{id}/tools/{toolId}:
     post:
       tags:
-      - mgmt-los
+        - mgmt-los
       summary: 'Add tool to learning object [Minimum Role: ''Instructor'']'
       description: Link a specific tool to a learning object by their respective identifiers.
       parameters:
-      - "$ref": "#/components/parameters/accessToken"
-      - name: id
-        in: path
-        required: true
-        schema:
-          type: string
-      - name: toolId
-        in: path
-        required: true
-        schema:
-          type: string
+        - $ref: '#/components/parameters/accessToken'
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: toolId
+          in: path
+          required: true
+          schema:
+            type: string
       responses:
         '200':
           description: Successfully added the tool to the learning object.
-  "/learningObjects/mgmt/{id}/relations/{relationId}":
+  /learningObjects/mgmt/los/{id}/relations/{relationId}:
     put:
       tags:
-      - mgmt-los
-      summary: 'Change the order of a learning object within a learning object, or
-        change the associated tool to a specific learning object [Minimum Role: ''Instructor'']'
-      description: Modify the order of a specific learning object inside another or
-        alter the tool linked to a given learning object.
+        - mgmt-los
+      summary: 'Change the order of a learning object within a learning object, or change the associated tool to a specific learning object [Minimum Role: ''Instructor'']'
+      description: Modify the order of a specific learning object inside another or alter the tool linked to a given learning object.
       parameters:
-      - "$ref": "#/components/parameters/accessToken"
-      - name: id
-        in: path
-        required: true
-        schema:
-          type: string
-      - name: relationId
-        in: path
-        required: true
-        schema:
-          type: string
+        - $ref: '#/components/parameters/accessToken'
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: relationId
+          in: path
+          required: true
+          schema:
+            type: string
       responses:
         '200':
-          description: Successfully updated the learning object's order or associated
-            tool.
-  "/learningObjects/mgmt/groups/{id}/enrollments/{loId}":
+          description: Successfully updated the learning object's order or associated tool.
+  /learningObjects/mgmt/groups/{id}/enrollments/{loId}:
     post:
       tags:
-      - mgmt-groups
-      - mgmt-los
+        - mgmt-groups
+        - mgmt-los
       summary: 'Enroll a group to a learning object [Minimum role: ''Instructor'']'
-      description: Enrolls a specific group to a particular learning object using
-        the respective identifiers.
+      description: Enrolls a specific group to a particular learning object using the respective identifiers.
       parameters:
-      - "$ref": "#/components/parameters/accessToken"
-      - name: id
-        in: path
-        required: true
-        schema:
-          type: string
-      - name: loId
-        in: path
-        required: true
-        schema:
-          type: string
+        - $ref: '#/components/parameters/accessToken'
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: loId
+          in: path
+          required: true
+          schema:
+            type: string
       responses:
         '200':
           description: Successfully enrolled the group to the learning object.
-  "/learningObjects/mgmt/groups/{id}/enrollments/{relationId}":
+  /learningObjects/mgmt/groups/{id}/enrollments/{relationId}:
     delete:
       tags:
-      - mgmt-groups
-      - mgmt-los
+        - mgmt-groups
+        - mgmt-los
       summary: 'Delete Enrollment [Minimum role: ''Instructor'']'
-      description: Removes a group's enrollment to a specific learning object, identified
-        by its relationId.
+      description: Removes a group's enrollment to a specific learning object, identified by its relationId.
       parameters:
-      - "$ref": "#/components/parameters/accessToken"
-      - name: id
-        in: path
-        required: true
-        schema:
-          type: string
-      - name: relationId
-        in: path
-        required: true
-        schema:
-          type: string
+        - $ref: '#/components/parameters/accessToken'
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: relationId
+          in: path
+          required: true
+          schema:
+            type: string
       responses:
         '200':
-          description: Successfully deleted the group's enrollment to the learning
-            object.
+          description: Successfully deleted the group's enrollment to the learning object.
     patch:
       tags:
-      - mgmt-groups
-      - mgmt-los
+        - mgmt-groups
+        - mgmt-los
       summary: 'Change the enrollment order within the group [Minimum role: ''Instructor'']'
-      description: Adjusts the sequence of a specific enrollment within a group based
-        on the given relationId.
+      description: Adjusts the sequence of a specific enrollment within a group based on the given relationId.
       parameters:
-      - "$ref": "#/components/parameters/accessToken"
-      - name: id
-        in: path
-        required: true
-        schema:
-          type: string
-      - name: relationId
-        in: path
-        required: true
-        schema:
-          type: string
+        - $ref: '#/components/parameters/accessToken'
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: relationId
+          in: path
+          required: true
+          schema:
+            type: string
       responses:
         '200':
-          description: Successfully modified the order of the enrollment within the
-            group.
-  "/learningObjects/users/me/courses":
+          description: Successfully modified the order of the enrollment within the group.
+  /learningObjects/users/{userId}/courses:
     get:
       summary: Returns Course-Structure of a logged in user
-      description: Get's the course structure of a tool-provider in XML-Common-Cartridge.
-        Currently Swagger has problems displaying XML-Examples. Get the real example
-        from the endpoint please.
+      description: Get's the course structure of a tool-provider in XML-Common-Cartridge. Currently Swagger has problems displaying XML-Examples. Get the real example from the endpoint please.
       tags:
-      - pblc
+        - pblc
       parameters:
-      - "$ref": "#/components/parameters/accessToken"
-      - in: query
-        name: includeMetadata
-        description: If true, the metadata of the tool will be included in the XML
-          (defaults to false)
-        example: false
-        schema:
-          type: boolean
+        - $ref: '#/components/parameters/accessToken'
+        - in: path
+          name: userId
+          description: Id of the user
+          example: userId
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: includeMetadata
+          description: If true, the metadata of the tool will be included in the XML (defaults to false)
+          example: false
+          schema:
+            type: boolean
       responses:
         '200':
-          description: Successful operation, The course-structure of that TP is shown
-            in XML. 'Example Value' has problems rendering xml data, please get data
-            from the route for a real example
+          description: Successful operation, The course-structure of that TP is shown in XML. 'Example Value' has problems rendering xml data, please get data from the route for a real example
           content:
             application/json:
               schema:
@@ -394,7 +316,7 @@ paths:
                   V2/courseStructure:
                     type: array
                     items:
-                      "$ref": "#/components/schemas/CourseStructure"
+                      $ref: '#/components/schemas/CourseStructure'
 components:
   schemas:
     relation:
@@ -418,13 +340,12 @@ components:
           default: toNodeId
         order:
           type: number
-          description: The order of the relation. Used for example ordering the enrollments
-            of a group/user
+          description: The order of the relation. Used for example ordering the enrollments of a group/user
           default: 0
     LearningObject:
       type: object
       required:
-      - displayName
+        - displayName
       properties:
         _id:
           type: string
@@ -446,27 +367,23 @@ components:
           properties:
             item:
               type: object
-              description: Each item describes a learning unit. It either has a tool
-                or another item
+              description: Each item describes a learning unit. It either has a tool or another item
               properties:
                 title:
                   type: string
-                  description: Title of the learning unit. Every 'item' must have
-                    a title
-                  example: "<title>Einführung</title>"
+                  description: Title of the learning unit. Every 'item' must have a title
+                  example: <title>Einführung</title>
                 tool:
                   type: string
-                  description: contains id as xml-attribute which points to a tool
-                    in resources
-                  example: "<tool identifier='fb763566-4c90-412f-a3e6-bd5ae776d960'/>"
+                  description: contains id as xml-attribute which points to a tool in resources
+                  example: <tool identifier='fb763566-4c90-412f-a3e6-bd5ae776d960'/>
         resources:
           type: object
           description: Here are all the tool informations.
           properties:
             resource:
               type: object
-              description: represents information of a single tool. Identifier from
-                tool points here and is a xml-attribute
+              description: represents information of a single tool. Identifier from tool points here and is a xml-attribute
               properties:
                 toolId:
                   type: string

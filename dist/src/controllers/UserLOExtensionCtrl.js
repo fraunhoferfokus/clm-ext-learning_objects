@@ -41,6 +41,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.getIMSCCForUser = void 0;
 const clm_core_1 = require("clm-core");
 const IMSCCtransformer_1 = require("../services/IMSCCtransformer");
 const CourseStructureJSON_1 = __importDefault(require("../services/CourseStructureJSON"));
@@ -49,95 +50,43 @@ const basePath = process.env.BASE_PATH || '/learningObjects';
 class MgtmLOGroupExtensionCtrl extends clm_core_1.BaseExtensionCtrl {
     getOwnCourseStructure() {
         return (req, res, next) => __awaiter(this, void 0, void 0, function* () {
-            var _a;
-            let accessToken = req.header('x-access-token');
-            let includeMetadata = req.query.includeMetadata;
-            let opt = {
-                setIds: true,
-                accessToken,
-                includeMetadata
-                // tps: result.data,
-            };
-            const [parentNodes] = yield Promise.all([
-                CourseStructureJSON_1.default.getUserCourseStrucuture((_a = req.requestingUser) === null || _a === void 0 ? void 0 : _a._id),
-            ]);
-            const json = yield new Promise((resolve, reject) => {
-                (0, IMSCCtransformer_1.convertJsonToCC)(parentNodes, opt, (xml) => __awaiter(this, void 0, void 0, function* () {
-                    xml2js_1.default.parseString(xml, (err, result) => {
-                        if (err)
-                            return res.json(err);
-                        resolve(result);
-                    });
-                }));
-            });
+            const userId = req.requestingUser._id;
+            let json = yield getIMSCCForUser(userId);
             let builder = new xml2js_1.default.Builder();
-            if (req.query.includeMetadata === 'true') {
-                // await manipulate(json);
-            }
-            // return res.json(json)
             let xml = builder.buildObject(json);
             return res
                 .type('application/xml')
                 .status(200)
                 .send(xml);
-            // return res.json(result)
-            // return res
-            //     .type('application/xml')
-            //     .send(xml)
         });
     }
 }
-// async function manipulate(struc: any) {
-//     const organization = struc.manifest.organizations[0].organization[0]
-//     const items = organization.item[0].item
-//     for (let item of items) {
-//         if (item.$) {
-//             const cp: any = await createCP(item.$.identifierRef);
-//             if (JSON.stringify(cp[0]['metadata'][0].lom) !== '{}') {
-//                 struc.manifest.metadata.push({ metadata: [cp[0]['metadata'][0].lom] })
-//             }
-//         } else if (item.item) {
-//             recursive(struc, item.item)
-//         }
-//     }
-//     struc.manifest.metadata = struc.manifest.metadata
-//     return struc
-// }
-function recursive(struc, tree) {
+function getIMSCCForUser(userId) {
     return __awaiter(this, void 0, void 0, function* () {
-        for (let item of tree) {
-            if (item.item)
-                recursive(struc, item.item);
-            const resources = struc.manifest.resources[0].resource;
-            // add resouce to resources
-            if (item.$) {
-                resources.push({
-                    $: {
-                        type: "imswl_xmlv1p3",
-                    },
-                    weblink: [
-                        {
-                            $: {
-                                xmlns: "http://www.imsglobal.org/xsd/imsccv1p3/imswl_v1p3",
-                                'xlmns:xsi': "http://www.w3.org/2001/XMLSchema-instance",
-                                'xsi:schemaLocation': "http://www.imsglobal.org/xsd/imsccv1p3/imswl_v1p3 http://www.imsglobal.org/profile/cc/ccv1p3/ccv1p3_imswl_v1p3.xsd"
-                            },
-                            url: [
-                                {
-                                    $: {
-                                        href: `${process.env.DEPLOY_URL}/learningObjects/${item.$.identifierRef}`
-                                    }
-                                }
-                            ]
-                        },
-                    ]
+        let user = yield clm_core_1.userBDTOInstance.findById(userId);
+        let [accessToken, _] = yield clm_core_1.jwtServiceInstance.createAccessAndRefreshToken(user);
+        let opt = {
+            setIds: true,
+            accessToken,
+        };
+        const [parentNodes] = yield Promise.all([
+            CourseStructureJSON_1.default.getUserCourseStrucuture(userId),
+        ]);
+        const json = yield new Promise((resolve, reject) => {
+            (0, IMSCCtransformer_1.convertJsonToCC)(parentNodes, opt, (xml) => __awaiter(this, void 0, void 0, function* () {
+                xml2js_1.default.parseString(xml, (err, result) => {
+                    if (err)
+                        reject(err);
+                    resolve(result);
                 });
-            }
-        }
+            }));
+        });
+        return json;
     });
 }
+exports.getIMSCCForUser = getIMSCCForUser;
 const controller = new MgtmLOGroupExtensionCtrl();
-controller.router.use(clm_core_1.AuthGuard.requireUserAuthentication({ sameUserAsId: true }));
+controller.router.use(clm_core_1.AuthGuard.requireUserAuthentication());
 /**
  * @openapi
  * components:
@@ -192,12 +141,6 @@ controller.router.use(clm_core_1.AuthGuard.requireUserAuthentication({ sameUserA
  *         - pblc
  *       parameters:
  *         - $ref: '#/components/parameters/accessToken'
- *         - in: query
- *           name: includeMetadata
- *           description: If true, the metadata of the tool will be included in the XML (defaults to false)
- *           example: false
- *           schema:
- *              type: boolean
  *       responses:
  *         200:
  *           description: Successful operation, The course-structure of that TP is shown in XML. 'Example Value' has problems rendering xml data, please get data from the route for a real example

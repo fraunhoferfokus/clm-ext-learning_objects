@@ -49,4 +49,4 @@ const createLOSchema = Object.assign(Object.assign({}, sharedSchema), { iconUrl:
         }
     } });
 exports.createLOValidaiton = (0, express_validator_1.checkSchema)(createLOSchema);
-exports.updateLOValidation = (0, express_validator_1.checkSchema)(sharedSchema);
+exports.updateLOValidation = (0, express_validator_1.checkSchema)(createLOSchema);
